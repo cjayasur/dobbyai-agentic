@@ -1,0 +1,23 @@
+{
+  "name": "dobbyai-agentic",
+  "version": "0.1.0",
+  "private": false,
+  "type": "module",
+  "description": "Autonomous AI agent built from protocol level — agentic loop, MCP, OAuth 2.1, three-tier agent identity. No agent framework.",
+  "scripts": {
+    "agent": "bun run src/step10-full-agent.ts",
+    "mcp:secure-server": "bun run src/mcp-server-secure-demo.ts",
+    "mcp:secure-client": "bun run src/mcp-client-secure-demo.ts",
+    "mcp:memory": "bun run src/mcp-server-memory.ts",
+    "oauth:pkce-server": "bun run src/oauth-server-pkce.ts",
+    "oauth:pkce-client": "bun run src/oauth-client-pkce.ts",
+    "oauth:cc-server": "bun run src/oauth-server-demo.ts"
+  },
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "^1.29.0"
+  },
+  "engines": {
+    "bun": ">=1.0"
+  },
+  "license": "MIT"
+}

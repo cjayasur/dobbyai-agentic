@@ -1,0 +1,27 @@
+# Secrets — never commit
+.env
+.env.local
+*.pem
+*.key
+id_ed25519*
+*token*
+
+# Dependencies
+node_modules/
+bun.lockb
+.bun/
+
+# Build / cache
+dist/
+build/
+*.log
+.DS_Store
+
+# Editor
+.vscode/
+.idea/
+*.swp
+
+# Memory / runtime state
+.claude-code-simple/
+memories.json
