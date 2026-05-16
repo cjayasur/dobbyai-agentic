@@ -115,10 +115,14 @@ The backend is pluggable — any Anthropic-Messages-compatible endpoint:
 proxy in front of a local open-weight model (Qwen / Llama). Credentials are
 read from the environment and never hardcoded.
 
-> A companion Anthropic↔OpenAI translation proxy (FastAPI) lives in a separate
-> repo (`dobbyai-proxy`) and lets the same agent run fully on-prem against a
-> local model with zero external API egress — relevant for regulated /
-> sovereign deployments.
+> **Fully on-prem, zero external egress.** Companion repo
+> [`dobbyai-proxy-extensions`](https://github.com/cjayasur/dobbyai-proxy-extensions)
+> adds local `dk_*` token auth + vision routing on top of the open-source
+> `1rgs/claude-code-proxy`, so the agent runs entirely against a self-hosted
+> model. The complete serving topology — vLLM tensor-parallel on consumer GPUs
+> and llama.cpp on a Blackwell unified-memory box — is documented in
+> [`docs/on-prem-deployment.md`](docs/on-prem-deployment.md). Relevant for
+> regulated / sovereign deployments (finance, healthcare, government).
 
 ---
 
