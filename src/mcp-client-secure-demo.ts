@@ -16,9 +16,13 @@
 //   bun mcp:secure-server   (port 3400)
 
 const SECURE_MCP_URL = "http://localhost:3400/mcp";
-const CLIENT_ID = "dobbyai-agent-001";
-const CLIENT_SECRET = "agent001-secret-key";
-const REQUESTED_SCOPES = "mcp:tools:read mcp:tools:write";
+// Defaults = the read+write demo agent. Override via env to demonstrate
+// scope-based authorization with a different grant, e.g.:
+//   MCP_CLIENT_ID=dobbyai-agent-admin MCP_CLIENT_SECRET=admin-secret-key \
+//   MCP_SCOPES="mcp:tools:read mcp:tools:write mcp:tools:admin" bun run src/mcp-client-secure-demo.ts
+const CLIENT_ID = process.env.MCP_CLIENT_ID ?? "dobbyai-agent-001";
+const CLIENT_SECRET = process.env.MCP_CLIENT_SECRET ?? "agent001-secret-key";
+const REQUESTED_SCOPES = process.env.MCP_SCOPES ?? "mcp:tools:read mcp:tools:write";
 
 // ─── OAuth helper ───────────────────────────────────────────────
 
