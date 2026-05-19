@@ -108,23 +108,62 @@ swapped (local Qwen, Llama, or a hosted model) without touching the agent.
 
 ```bash
 bun install
-cp .env.example .env          # set AGENT_API_KEY (and AGENT_API_URL if using a proxy)
+cp .env.example .env          # then set AGENT_API_URL + AGENT_API_KEY (see below)
 bun run src/step10-full-agent.ts
 ```
 
-The backend is pluggable — any Anthropic-Messages-compatible endpoint:
-`api.anthropic.com` directly, or a self-hosted Anthropic↔OpenAI translation
-proxy in front of a local open-weight model (Qwen / Llama). Credentials are
-read from the environment and never hardcoded.
+The backend is pluggable — **any Anthropic-Messages-compatible endpoint**.
+Two env vars select it; credentials are read from the environment, never
+hardcoded:
 
-> **Fully on-prem, zero external egress.** Companion repo
-> [`dobbyai-proxy-extensions`](https://github.com/cjayasur/dobbyai-proxy-extensions)
-> adds local `dk_*` token auth + vision routing on top of the open-source
-> `1rgs/claude-code-proxy`, so the agent runs entirely against a self-hosted
-> model. The complete serving topology — vLLM tensor-parallel on consumer GPUs
-> and llama.cpp on a Blackwell unified-memory box — is documented in
-> [`docs/on-prem-deployment.md`](docs/on-prem-deployment.md). Relevant for
-> regulated / sovereign deployments (finance, healthcare, government).
+| Var | Meaning |
+|---|---|
+| `AGENT_API_URL` | the `/v1/messages` endpoint (default: `https://api.anthropic.com/v1/messages`) |
+| `AGENT_API_KEY` | the credential for that endpoint |
+
+The in-code model name (`claude-sonnet-4-…`) is sent as-is; a translation
+proxy remaps it to whatever local model it fronts, so the agent code never
+changes between these modes.
+
+### Three ways to run
+
+**1. Hosted Claude (simplest).** Real Anthropic, your account is billed:
+
+```bash
+AGENT_API_URL=https://api.anthropic.com/v1/messages
+AGENT_API_KEY=sk-ant-api03-…
+```
+
+**2. Local model via a translation proxy (zero external egress).** Point at a
+self-hosted Anthropic↔OpenAI proxy in front of Qwen / Llama:
+
+```bash
+AGENT_API_URL=http://localhost:8082/v1/messages
+AGENT_API_KEY=dk_…
+```
+
+**3. The full on-prem stack.** Pair with companion repo
+[`dobbyai-proxy-extensions`](https://github.com/cjayasur/dobbyai-proxy-extensions)
+— local `dk_*` token auth + vision routing on top of the open-source
+`1rgs/claude-code-proxy`. End to end:
+
+```
+this agent (MCP tools, OAuth) ─► dobbyai-proxy-extensions  ─► your local
+  AGENT_API_URL=…proxy/v1/messages   (dk_ auth, Anthropic↔OpenAI    Qwen/Llama
+  AGENT_API_KEY=dk_…                  + tool-call translation)        (vLLM/llama.cpp)
+```
+
+Bring the proxy up per its README (mint a `dk_` with its `create_key.py`),
+point `AGENT_API_URL` at it, and the entire loop — agent, MCP tools, auth,
+inference — runs with **nothing leaving the perimeter**. The serving topology
+(vLLM tensor-parallel on consumer GPUs; llama.cpp on a Blackwell
+unified-memory box) is in
+[`docs/on-prem-deployment.md`](docs/on-prem-deployment.md). Relevant for
+regulated / sovereign deployments (finance, healthcare, government).
+
+> ⚠️ This agent has filesystem tools and follows instructions literally — it
+> will read and print a file you ask it to, `.env` included. Keep secrets out
+> of files in its workspace; supply credentials via the environment.
 
 ---
 

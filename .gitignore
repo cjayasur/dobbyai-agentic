@@ -25,3 +25,5 @@ build/
 # Memory / runtime state
 .claude-code-simple/
 memories.json
+*.db
+*.sqlite*
