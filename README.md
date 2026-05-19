@@ -5,8 +5,9 @@ any agent framework — the agentic loop, MCP transport, OAuth 2.1 authorization
 and a three-tier agent identity model implemented directly against the
 protocols.
 
-> Built to understand the trust and transaction layer that lets AI agents
-> coordinate, authenticate, and act autonomously — not to wrap an SDK.
+> Built to understand the trust and authorization layer that lets AI agents
+> authenticate, get scoped authority, and act autonomously with an audit
+> trail — not to wrap an SDK.
 
 ---
 
@@ -34,14 +35,15 @@ It demonstrates four things that matter for agent infrastructure:
 
 ---
 
-## Map to agent-identity / payment infrastructure
+## Map to regulated / security-critical deployments
 
-If you work on the layer where AI agents authenticate, get scoped authority,
-and act with accountability, the relevant pieces are:
+If you work where AI agents must authenticate, hold only scoped authority,
+and leave an audit trail — finance, healthcare, government, any on-prem
+regulated environment — the relevant pieces are:
 
 | Concern | Where it lives | What it shows |
 |---|---|---|
-| **Delegated, ephemeral agent identity** | `docs/security-curriculum.md` (three-tier model) | root authority → delegated agent credential → ephemeral session — the same decomposition behind modern agent-passport designs |
+| **Delegated, ephemeral agent identity** | `docs/security-curriculum.md` (three-tier model) | root authority → delegated agent credential → ephemeral session — least-privilege by construction, so a compromised session never escalates to root |
 | **Programmable governance / scoped authority** | `src/mcp-server-secure-demo.ts` | per-tool scope enforcement at the protocol level — an agent only gets the tools and parameters its grant allows |
 | **Human-delegated vs autonomous auth** | `src/oauth-server-pkce.ts`, `src/oauth-server-demo.ts` | PKCE for human-delegated agents, `client_credentials` for autonomous ones — side by side |
 | **Auditability** | `src/step10-full-agent.ts` | every tool call is logged before execution; the loop is designed so each action is traceable |
